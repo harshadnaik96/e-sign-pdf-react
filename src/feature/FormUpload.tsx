@@ -11,6 +11,7 @@ export const FormUpload = (): JSX.Element => {
 
   const auth = useAuth();
   const navigate = useNavigate();
+
   const onSubmit = async () => {
     try {
       const { name, email, pdf } = getValues();
@@ -27,11 +28,20 @@ export const FormUpload = (): JSX.Element => {
       if (response ?? null) {
         reset();
         //@ts-ignore
-        window.open(
-          URL.createObjectURL(
-            new Blob([response?.data], { type: "application/pdf" })
-          )
-        );
+        const a = document.createElement("a");
+        a.style.display = "none";
+        document.body.appendChild(a);
+        const blobFile = new Blob([response?.data]);
+        const url = window.URL.createObjectURL(blobFile);
+        a.href = url;
+        a.download = "test.pdf";
+        a.click();
+        window.URL.revokeObjectURL(url);
+        // window.open(
+        //   URL.createObjectURL(
+        //     new Blob([response?.data], { type: "application/pdf" })
+        //   )
+        // );
       }
     } catch (error) {
       debugger;
